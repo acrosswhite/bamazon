@@ -7,11 +7,12 @@ var connection = mysql.createConnection({
 
   // Your password
   password: "",
-  database: "ice_creamDB"
+  database: "bamazon"
 });
 
 connection.connect(function(err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId + "\n");
-  createProduct();
+  displayProducts();
 });
+

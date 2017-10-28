@@ -1,0 +1,27 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "Week 12 Homework",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/acrosswhite/bamazon.git"
+  },
+  "keywords": [
+    "week",
+    "12",
+    "homework"
+  ],
+  "author": "ashley crosswhite",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/acrosswhite/bamazon/issues"
+  },
+  "homepage": "https://github.com/acrosswhite/bamazon#readme",
+  "dependencies": {
+    "inquirer": "^3.3.0"
+  }
+}
