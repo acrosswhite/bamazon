@@ -56,7 +56,8 @@ function displayProducts(){
             //update database with new totals
             console.log("\nCustomer Total: " + (parseInt(answers.units))*(productRow.price))
             console.log("_______________________________")
-            updateQuantity(answers.units, answers.productId);
+            var newUnits = (productRow.stock_quantity) - (parseInt(answers.units));
+            updateQuantity(newUnits, answers.productId);
 
           }
           //if no product left
@@ -72,12 +73,12 @@ function displayProducts(){
 }
 
 
-function updateQuantity(units, productId){
+function updateQuantity(newUnits, productId){
 
 var productUpdate = connection.query(
   "UPDATE products SET ? WHERE ?",
   [{
-    stock_quantity: units
+    stock_quantity: newUnits
   },
   {
     id: productId
