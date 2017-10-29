@@ -16,18 +16,25 @@ var connection = mysql.createConnection({
 connection.connect(function(err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId + "\n");
+  menu();
 });
 
 function menu(){
 	inquirer.prompt([
 	{
+		type: "list",
 		name: "menu",
 		message: "What would you like to do?",
-		choices: ["View all products", "View low inventory", "Update Quantity", "Add new product"]
+		choices: [new inquirer.Separator(), "View all products", 
+			"View low inventory", 
+			"Update Quantity", 
+			"Add new product" 
+			]
 	}
 	]).then(function(answers){
-		console.log(answers)
-		switch (answers){
+		//console.log(answers)
+		console.log(JSON.stringify(answers, null, '  '));
+		switch (answers.menu){
 			case "View all products":
 			viewAllProducts();
 			break;
@@ -37,8 +44,22 @@ function menu(){
 			break;
 
 			case "Update quantity":
-			inquirer.prompt([])
-			updateQuantity(newUnits, productId);
+			inquirer.prompt([
+			{
+				name: "productId",
+				message: "Which product would you like to update?"
+			},
+			{
+				name: "units",
+				message: "How many would you like to add to inventory?"
+			}
+			]).then(function(answers){
+				for (var i = 0; i < data.length; i++) {
+					var row = data[i]
+					var newUnits = (parseInt(answers.units) + (row.stock_quantity));
+					updateQuantity(newUnits, answers.productId);
+				};
+			});
 			break;
 
 			case "Add new product":
@@ -53,11 +74,16 @@ function menu(){
 
 function viewAllProducts() {
   console.log("Selecting all products...\n");
-  connection.query("SELECT * FROM products", function(err, result) {
+  connection.query("SELECT * FROM products", function(err, data) {
     if (err) throw err;
     // Log all results of the SELECT statement
-    console.log(result);
-    //connection.end();
+    for (var i = 0; i < data.length; i++) {
+      var row = data[i]
+      console.log("Product Code " + row.id + "\nProduct: " + row.product_name + "\nDepartment: " + row.department_name + "\nPrice: " + row.price + "\nInventory: " + row.stock_quantity);
+      console.log("\n________________________\n")
+    }
+    //console.log(data);
+    connection.end();
   });
 }
 
@@ -68,7 +94,7 @@ function viewLowInventory() {
     if (err) throw err;
     // Log all results of the SELECT statement
     console.log(result);
-    //connection.end();
+    connection.end();
   });
 }
 
@@ -88,7 +114,7 @@ var productUpdate = connection.query(
     if (err) throw err;
     console.log(result.affectedRows + " quantity updated\n")
   });
-  //connection.end();
+  connection.end();
 }
 
 function addNew(product_name, department_name, price, stock_quantity){
@@ -99,14 +125,14 @@ function addNew(product_name, department_name, price, stock_quantity){
     "INSERT INTO products SET ?",
     {
       name: "product_name",
-      department: "department_name"
+      department: "department_name",
       price: price,
       quantity: stock_quantity
     },
-    function(err, res) {
-      console.log(res.affectedRows + " product inserted!\n");
-      // Call updateProduct AFTER the INSERT completes
-      updateProduct();
+    function(err, result) {
+    	if (err) throw err;
+      	console.log(result.affectedRows + " product inserted!\n");
+
     }
   );
 
