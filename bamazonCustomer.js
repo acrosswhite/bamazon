@@ -46,16 +46,13 @@ function displayProducts(){
       for (var j = 0; j < data.length; j++) {
         var productRow = data[j]
         if (answers.productId == productRow.id){
-         // console.log(productRow)
-         //check for quantity
-         //console.log(parseInt(answers.units))
-         //console.log(typeof(productRow.stock_quantity))
+ 
           if(parseInt(answers.units) <= productRow.stock_quantity){
 
             console.log("Thank you for your order")
             //update database with new totals
             console.log("\nCustomer Total: " + (parseInt(answers.units))*(productRow.price))
-            console.log("_______________________________")
+            console.log("_______________________________\n")
             var newUnits = (productRow.stock_quantity) - (parseInt(answers.units));
             updateQuantity(newUnits, answers.productId);
 
@@ -68,7 +65,6 @@ function displayProducts(){
     }
 
   })
-//          connection.end();
   });
 }
 
@@ -84,10 +80,10 @@ var productUpdate = connection.query(
     id: productId
   }],
   function(err, result){
-    console.log(result)
     if (err) throw err;
     console.log(result.affectedRows + " quantity updated\n")
   });
+  connection.end();
 }
 
 
