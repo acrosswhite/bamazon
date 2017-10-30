@@ -128,7 +128,11 @@ var productUpdate = connection.query(
 }
 
 function newProduct(){
-	inquirer.prompt
+	inquirer.prompt([
+		{
+			name: "product_name"
+		}
+		])
 }
 
 function addNew(product_name, department_name, price, stock_quantity){
