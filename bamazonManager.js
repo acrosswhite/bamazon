@@ -184,5 +184,5 @@ function addNew(product_name, department_name, price, stock_quantity){
 
 
   // logs the actual query being run
-  console.log(query.sql);
+  //console.log(query.sql);
 }

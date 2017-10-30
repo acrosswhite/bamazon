@@ -51,7 +51,7 @@ function displayProducts(){
 
             console.log("Thank you for your order")
             //update database with new totals
-            console.log("\nCustomer Total: " + (parseInt(answers.units))*(productRow.price))
+            console.log("\nCustomer Total: \$" + (parseInt(answers.units))*(productRow.price))
             console.log("_______________________________\n")
             var newUnits = (productRow.stock_quantity) - (parseInt(answers.units));
             updateQuantity(newUnits, answers.productId);
