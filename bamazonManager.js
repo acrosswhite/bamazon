@@ -48,7 +48,7 @@ function menu(){
 			break;
 
 			case "Add new product":
-			addNew(product_name, department_name, price, stock_quantity);
+			newProduct();
 			break;
 
 			default:
@@ -102,7 +102,7 @@ function callQuantity(){
 	]).then(function(answers){
 		for (var i = 0; i < data.length; i++) {
 			var row = data[i]
-			var newUnits = (parseInt(answers.units) + (row.stock_quantity));
+			var newUnits = (parseFloat(answers.units) + (row.stock_quantity));
 			updateQuantity(newUnits, answers.productId);
 		};
 	});
@@ -130,9 +130,25 @@ var productUpdate = connection.query(
 function newProduct(){
 	inquirer.prompt([
 		{
-			name: "product_name"
+			name: "product_name",
+			message: "What is the new product name?"
+		},
+		{
+			name: "department_name",
+			message: "What department does it belong in?"
+		},
+		{
+			name: "price",
+			message: "How much does it cost, per unit?"
+		},
+		{
+			name: "stock_quantity",
+			message: "How many do you need to stock?"
 		}
-		])
+		]).then(function(answers){
+			console.log(answers)
+			addNew(answers.product_name, answers.department_name, parseFloat(answers.price), parseFloat(answers.stock_quantity));
+		})
 }
 
 function addNew(product_name, department_name, price, stock_quantity){
@@ -142,17 +158,19 @@ function addNew(product_name, department_name, price, stock_quantity){
   var query = connection.query(
     "INSERT INTO products SET ?",
     {
-      name: "product_name",
-      department: "department_name",
+      product_name: product_name,
+      department_name: department_name,
       price: price,
-      quantity: stock_quantity
+      stock_quantity: stock_quantity
     },
     function(err, result) {
     	if (err) throw err;
       	console.log(result.affectedRows + " product inserted!\n");
-
+      	connection.end();
     }
+
   );
+
 
   // logs the actual query being run
   console.log(query.sql);
