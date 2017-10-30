@@ -27,7 +27,7 @@ function menu(){
 		message: "What would you like to do?",
 		choices: [new inquirer.Separator(), "View all products", 
 			"View low inventory", 
-			"Update Quantity", 
+			"Update quantity", 
 			"Add new product" 
 			]
 	}
@@ -57,9 +57,10 @@ function menu(){
 	})
 }
 
-function viewAllProducts() {
+function viewAllProducts(nextFunction) {
+
   console.log("Selecting all products...\n");
-  connection.query("SELECT * FROM products", function(err, data) {
+  connection.query("SELECT * FROM products", function(err, data, x) {
     if (err) throw err;
     // Log all results of the SELECT statement
     for (var i = 0; i < data.length; i++) {
@@ -67,8 +68,12 @@ function viewAllProducts() {
       console.log("Product Code " + row.id + "\nProduct: " + row.product_name + "\nDepartment: " + row.department_name + "\nPrice: " + row.price + "\nInventory: " + row.stock_quantity);
       console.log("\n________________________\n")
     }
-    //console.log(data);
-    connection.end();
+    if(nextFunction){
+    	nextFunction(data);
+    }
+    else{
+    	connection.end();
+	}
   });
 }
 
@@ -89,8 +94,11 @@ function viewLowInventory() {
 }
 
 function callQuantity(){
-	viewAllProducts();
-		inquirer.prompt([
+	viewAllProducts(selectProductToUpdate);
+}
+
+function selectProductToUpdate(data){
+	inquirer.prompt([
 	{
 		name: "productId",
 		message: "Which product would you like to update?"
@@ -103,8 +111,11 @@ function callQuantity(){
 		for (var i = 0; i < data.length; i++) {
 			var row = data[i]
 			var newUnits = (parseFloat(answers.units) + (row.stock_quantity));
-			updateQuantity(newUnits, answers.productId);
+			if(row.id === parseInt(answers.productId)){
+				updateQuantity(newUnits, parseInt(answers.productId));
+			}
 		};
+		connection.end();
 	});
 }
 
@@ -123,8 +134,8 @@ var productUpdate = connection.query(
     //console.log(result)
     if (err) throw err;
     console.log(result.affectedRows + " quantity updated\n")
+    //connection.end();
   });
-  connection.end();
 }
 
 function newProduct(){
