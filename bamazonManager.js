@@ -44,22 +44,7 @@ function menu(){
 			break;
 
 			case "Update quantity":
-			inquirer.prompt([
-			{
-				name: "productId",
-				message: "Which product would you like to update?"
-			},
-			{
-				name: "units",
-				message: "How many would you like to add to inventory?"
-			}
-			]).then(function(answers){
-				for (var i = 0; i < data.length; i++) {
-					var row = data[i]
-					var newUnits = (parseInt(answers.units) + (row.stock_quantity));
-					updateQuantity(newUnits, answers.productId);
-				};
-			});
+			callQuantity();
 			break;
 
 			case "Add new product":
@@ -90,12 +75,37 @@ function viewAllProducts() {
 function viewLowInventory() {
   console.log("Selecting low inventory products...\n");
   connection.query("SELECT id, product_name, department_name, price, stock_quantity FROM products WHERE stock_quantity < 5", 
-  	function(err, result) {
+  	function(err, data) {
     if (err) throw err;
+    for (var i = 0; i < data.length; i++) {
+      var row = data[i]
+      console.log("Product Code " + row.id + "\nProduct: " + row.product_name + "\nDepartment: " + row.department_name + "\nPrice: " + row.price + "\nInventory: " + row.stock_quantity);
+      console.log("\n________________________\n")
+    }
     // Log all results of the SELECT statement
-    console.log(result);
+    //console.log(result);
     connection.end();
   });
+}
+
+function callQuantity(){
+	viewAllProducts();
+		inquirer.prompt([
+	{
+		name: "productId",
+		message: "Which product would you like to update?"
+	},
+	{
+		name: "units",
+		message: "How many would you like to add to inventory?"
+	}
+	]).then(function(answers){
+		for (var i = 0; i < data.length; i++) {
+			var row = data[i]
+			var newUnits = (parseInt(answers.units) + (row.stock_quantity));
+			updateQuantity(newUnits, answers.productId);
+		};
+	});
 }
 
 
@@ -115,6 +125,10 @@ var productUpdate = connection.query(
     console.log(result.affectedRows + " quantity updated\n")
   });
   connection.end();
+}
+
+function newProduct(){
+	inquirer.prompt
 }
 
 function addNew(product_name, department_name, price, stock_quantity){
