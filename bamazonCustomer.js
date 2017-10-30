@@ -51,11 +51,15 @@ function displayProducts(){
 
             console.log("Thank you for your order")
             //update database with new totals
-            console.log("\nCustomer Total: \$" + (parseInt(answers.units))*(productRow.price))
+            var updateSalesAmount = (parseInt(answers.units))*(productRow.price);
+
+            console.log("\nCustomer Total: \$" + updateSalesAmount);
             console.log("_______________________________\n")
             var newUnits = (productRow.stock_quantity) - (parseInt(answers.units));
-            updateQuantity(newUnits, answers.productId);
 
+            updateQuantity(newUnits, answers.productId);
+            updateProductSales(updateSalesAmount, answers.productId);
+          
           }
           //if no product left
           else if (parseInt(answers.units) > productRow.stock_quantity){
@@ -83,6 +87,22 @@ var productUpdate = connection.query(
     if (err) throw err;
     console.log(result.affectedRows + " quantity updated\n")
   });
+  //connection.end();
+}
+
+function updateProductSales(updateSalesAmount, productId){
+  var salesUpdate = connection.query(
+    "UPDATE products SET ? WHERE ?",
+    [{
+      product_sales: updateSalesAmount
+    },
+    {
+      id: productId
+    }],
+    function(err, result){
+      if (err) throw err;
+      console.log(result.affectedRows + " sales updated\n")
+    });
   connection.end();
 }
 
