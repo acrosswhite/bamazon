@@ -106,6 +106,7 @@ function updateProductSales(updateSalesAmount, productId){
   connection.end();
 }
 
+module.exports = displayProducts;
 
 
 
