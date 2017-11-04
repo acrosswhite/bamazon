@@ -87,8 +87,6 @@ function viewLowInventory() {
       console.log("Product Code " + row.id + "\nProduct: " + row.product_name + "\nDepartment: " + row.department_name + "\nPrice: " + row.price + "\nInventory: " + row.stock_quantity);
       console.log("\n________________________\n")
     }
-    // Log all results of the SELECT statement
-    //console.log(result);
     connection.end();
   });
 }
@@ -182,7 +180,4 @@ function addNew(product_name, department_name, price, stock_quantity){
 
   );
 
-
-  // logs the actual query being run
-  //console.log(query.sql);
 }
